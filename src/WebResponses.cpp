@@ -282,9 +282,10 @@ size_t AsyncAbstractResponse::_ack(AsyncWebServerRequest *request, size_t len, u
       space -= headLen;
     } else {
       String out = _head.substring(0, space);
-      _head = _head.substring(space);
-      _writtenLength += request->client()->write(out.c_str(), out.length());
-      return out.length();
+      size_t written = request->client()->write(out.c_str(), out.length());
+      _head = _head.substring(written);
+      _writtenLength += written;
+      return written;
     }
   }
 
