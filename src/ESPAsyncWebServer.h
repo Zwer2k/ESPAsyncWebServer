@@ -21,6 +21,8 @@
 #ifndef _ESPAsyncWebServer_H_
 #define _ESPAsyncWebServer_H_
 
+#define ESP_ASYNC_WEB_SERVER_CONTENT_TYPE_HACK
+
 #include "Arduino.h"
 
 #include <functional>
