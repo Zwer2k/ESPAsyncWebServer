@@ -146,7 +146,7 @@ void AsyncWebServerRequest::_onData(void *buf, size_t len){
           _parsedLength += len;
     } else {
       if(_parsedLength == 0){
-        if(_contentType.startsWith(F("application/x-www-form-urlencoded"))){
+        if(_contentType.startsWith(F("application/x-www-form-urlencoded")) || (_contentType == F("text/plain"))){
           _isPlainPost = true;
         } else if(_contentType == F("text/plain") && __is_param_char(((char*)buf)[0])){
           size_t i = 0;
@@ -368,16 +368,12 @@ bool AsyncWebServerRequest::_parseReqHeader(){
 }
 
 void AsyncWebServerRequest::_parsePlainPostChar(uint8_t data){
-  if(data && (char)data != '&')
+  if(data)
     _temp += (char)data;
-  if(!data || (char)data == '&' || _parsedLength == _contentLength){
+  if(!data || _parsedLength == _contentLength){
     String name = F("body");
     String value = _temp;
-    if(!_temp.startsWith(String('{')) && !_temp.startsWith(String('[')) && _temp.indexOf('=') > 0){
-      name = _temp.substring(0, _temp.indexOf('='));
-      value = _temp.substring(_temp.indexOf('=') + 1);
-    }
-    _addParam(new AsyncWebParameter(urlDecode(name), urlDecode(value), true));
+    _addParam(new AsyncWebParameter(name, value, true));
     _temp = String();
   }
 }
